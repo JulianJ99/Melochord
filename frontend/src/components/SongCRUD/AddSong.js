@@ -21,7 +21,7 @@ export const AddSong = () => {
       artist,
     };
     addSong(newSong);
-    history.push("/");
+    history("/");
   };
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 
 
 import { GlobalContext } from '../context/globalState';
@@ -15,8 +15,8 @@ export const EditSong = (route) => {
     album: "",
     artist: "",
   });
-
-  const currentSongId = route.match.params.id;
+  let {id} = useParams();
+  const currentSongId = id;
 
   useEffect(() => {
     const songId = currentSongId;
@@ -29,7 +29,7 @@ export const EditSong = (route) => {
   const onSubmit = (e) => {
     e.preventDefault();
     editSong(selectedSong);
-    history.push("/");
+    history("/");
   };
 
   const handleOnChange = (songKey, newValue) =>

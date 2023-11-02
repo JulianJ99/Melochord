@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { GlobalContext } from '../context/globalState';
 
 export const SongList = () => {
-  const { songs, removeSong } = useContext(GlobalContext);
+  const { songs, removeSong, editSong } = useContext(GlobalContext);
   return (
     <React.Fragment>
       {songs.length > 0 ? (
