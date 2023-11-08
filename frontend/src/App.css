@@ -1,3 +1,25 @@
 .wrapper {
   padding: 20px;
 }
+
+.App {
+  text-align: center;
+}
+  
+.registration {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+input {
+  width: 250px;
+  height: 40px;
+}
