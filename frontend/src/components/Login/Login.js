@@ -1,58 +1,51 @@
-import React, { useState } from 'react'
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
- 
-const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [msg, setMsg] = useState('');
-    const history = useHistory();
- 
-    const Auth = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.post('http://localhost:5000/login', {
-                email: email,
-                password: password
-            });
-            history.push("/dashboard");
-        } catch (error) {
-            if (error.response) {
-                setMsg(error.response.data.msg);
-            }
-        }
-    }
- 
-    return (
-        <section className="hero has-background-grey-light is-fullheight is-fullwidth">
-            <div className="hero-body">
-                <div className="container">
-                    <div className="columns is-centered">
-                        <div className="column is-4-desktop">
-                            <form onSubmit={Auth} className="box">
-                                <p className="has-text-centered">{msg}</p>
-                                <div className="field mt-5">
-                                    <label className="label">Email or Username</label>
-                                    <div className="controls">
-                                        <input type="text" className="input" placeholder="Username" value={email} onChange={(e) => setEmail(e.target.value)} />
-                                    </div>
-                                </div>
-                                <div className="field mt-5">
-                                    <label className="label">Password</label>
-                                    <div className="controls">
-                                        <input type="password" className="input" placeholder="******" value={password} onChange={(e) => setPassword(e.target.value)} />
-                                    </div>
-                                </div>
-                                <div className="field mt-5">
-                                    <button className="button is-success is-fullwidth">Login</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    )
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import './Login.css';
+
+async function loginUser(credentials) {
+    return fetch('http://localhost:8080/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(credentials)
+    })
+      .then(data => data.json())
+   }
+
+export default function Login({ setToken }) {
+  const [username, setUserName] = useState();
+  const [password, setPassword] = useState();
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const token = await loginUser({
+      username,
+      password
+    });
+    setToken(token);
+  }
+
+  return(
+    <div className="login-wrapper">
+      <h1>Please Log In</h1>
+      <form onSubmit={handleSubmit}>
+        <label>
+          <p>Username</p>
+          <input type="text" onChange={e => setUserName(e.target.value)}/>
+        </label>
+        <label>
+          <p>Password</p>
+          <input type="password" onChange={e => setPassword(e.target.value)}/>
+        </label>
+        <div>
+          <button type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+  )
 }
- 
-export default Login
+
+Login.propTypes = {
+  setToken: PropTypes.func.isRequired
+};

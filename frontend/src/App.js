@@ -1,19 +1,22 @@
-import React from 'react';
+
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import Dashboard from '../src/components/Dashboard/Dashboard';
+import Login from '../src/components/Login/Login';
 import Preferences from '../src/components/Preferences/Preferences';
+import useToken from '../src/components/App/useToken';
 import { Home } from '../src/components/Home';
 import { AddSong } from '../src/components/SongCRUD/AddSong';
 import { EditSong } from '../src/components/SongCRUD/EditSong';
 import { GlobalProvider } from '../src/components/context/globalState';
-import Navbar from "./Navbar";
-import Register from "./components/Login/Register";
-import Login from "./components/Login/Login";
 
 
 function App() {
+  const { token, setToken } = useToken();
 
+  if(!token) {
+    return <Login setToken={setToken} />
+  }
 
   return (
     <GlobalProvider>
@@ -24,10 +27,7 @@ function App() {
           
           <Route path="/add" element={<AddSong />} exact />
           <Route path="/edit/:id" element={<EditSong />} exact />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />}/>
-          <Navbar/>
           <Route path="/preferences" element={<Preferences />}/> 
         </Routes>
     </div>
