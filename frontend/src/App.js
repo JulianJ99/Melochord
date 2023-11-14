@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import Axios from 'axios';
 import { Route, Routes } from 'react-router-dom';
 import Dashboard from '../src/components/Dashboard/Dashboard';
-import Login from '../src/components/Login/Login';
+//import Login from '../src/components/Login/Login';
 import Preferences from '../src/components/Preferences/Preferences';
-import useToken from '../src/components/App/useToken';
+//import useToken from '../src/components/App/useToken';
 import { Home } from '../src/components/Home';
 import { AddSong } from '../src/components/SongCRUD/AddSong';
 import { EditSong } from '../src/components/SongCRUD/EditSong';
@@ -27,18 +27,15 @@ function App() {
   const [password, setPassword] = useState ("");
   
   const [loginStatus, setLoginStatus] = useState("");
-  const [registerStatus, setRegisterStatus] = useState("");
+
+  Axios.defaults.withCredentials = true;
+
   
   const register = () => {
      Axios.post("http://localhost:3001/register", {
        username: usernameReg,
        password: passwordReg,
-     }).then((response) => {
-      if(response.data.message) {
-        setRegisterStatus( response.data.message);
-      } else {
-        setRegisterStatus("Registered!");
-      }
+      }).then((response) => {
        console.log(response);
      });
   };
@@ -56,7 +53,15 @@ function App() {
        console.log(response.data);
     });
   };
-  
+    
+  useEffect(() => {
+   Axios.get("http://localhost:3001/login").then((response) => {
+     if (response.data.loggedIn === true) {
+       setLoginStatus(response.data.user[0].username);
+     }
+   });
+ }, []);
+
   return (
     
     <GlobalProvider>
@@ -78,7 +83,7 @@ function App() {
              }}
            /> <br />
            <button onClick={register} > Register</button>
-           <h1> {registerStatus}</h1>
+           
         </div>
   
         <div className="login">
@@ -86,15 +91,15 @@ function App() {
             <input
                type="text"
                placeholder="Username…"
-               onChange = { (e) => {
-                  setUsername (e.target.value);
+               onChange = {(e) => {
+                  setUsername(e.target.value);
                }}
                /> <br/>
             <input
                type="password"
                placeholder="Password…"
-               onChange = { (e) => {
-                  setPassword (e.target.value);
+               onChange = {(e) => {
+                  setPassword(e.target.value);
                }}
             />
             <button onClick={login}>Login</button>
