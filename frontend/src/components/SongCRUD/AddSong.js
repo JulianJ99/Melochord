@@ -1,88 +1,134 @@
-import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { Component } from "react";
+import SongDataService from "../SongCRUD/song.service";
 
-import { GlobalContext } from '../context/globalState';
+export default class AddSong extends Component {
+  constructor(props) {
+    super(props);
+    this.onChangeTitle = this.onChangeTitle.bind(this);
+    this.onChangeArtist = this.onChangeArtist.bind(this);
+    this.onChangeAlbum = this.onChangeAlbum.bind(this);
+    this.saveSong = this.saveSong.bind(this);
+    this.newSong = this.newSong.bind(this);
 
-export const AddSong = () => {
-  let history = useNavigate();
+    this.state = {
+      id: null,
+      title: "",
+      artist: "", 
+      album: "",
 
-  const { addSong, songs } = useContext(GlobalContext);
-
-  const [name, setName] = useState("");
-  const [album, setAlbum] = useState("");
-  const [artist, setArtist] = useState("");
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const newSong = {
-      id: songs.length + 1,
-      name,
-      album,
-      artist,
     };
-    addSong(newSong);
-    history("/");
-  };
+  }
 
-  return (
-    <React.Fragment>
-      <div className="w-full max-w-sm container mt-20 mx-auto">
-        <form onSubmit={onSubmit}>
-          <div className="w-full mb-5">
-            <label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              htmlFor="name"
-            >
-              Name of song
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:text-gray-600"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              type="text"
-              placeholder="Enter name"
-            />
-          </div>
-          <div className="w-full mb-5">
-            <label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              htmlFor="Album"
-            >
-              Album
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:text-gray-600 focus:shadow-outline"
-              value={album}
-              onChange={(e) => setAlbum(e.target.value)}
-              type="text"
-              placeholder="Enter album"
-            />
-          </div>
-          <div className="w-full mb-5">
-            <label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              htmlFor="artist"
-            >
-              Artist
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:text-gray-600"
-              value={artist}
-              onChange={(e) => setArtist(e.target.value)}
-              type="text"
-              placeholder="Enter artist"
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <button className="mt-5 bg-green-400 w-full hover:bg-green-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-              Add Song
+  onChangeTitle(e) {
+    this.setState({
+      title: e.target.value
+    });
+  }
+
+  onChangeArtist(e) {
+    this.setState({
+      artist: e.target.value
+    });
+  }
+
+  onChangeAlbum(e) {
+    this.setState({
+      album: e.target.value
+    });
+  }
+
+  saveSong() {
+    var data = {
+      title: this.state.title,
+      artist: this.state.artist,
+      album: this.state.artist
+    };
+
+    SongDataService.create(data)
+      .then(response => {
+        this.setState({
+          id: response.data.id,
+          title: response.data.title,
+          artist: response.data.artist,
+          album: response.data.album,
+
+          submitted: true
+        });
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+
+  newSong() {
+    this.setState({
+      id: null,
+      title: "",
+      artist: "",
+      album: "",
+
+      submitted: false
+    });
+  }
+
+  render() {
+    return (
+      <div className="submit-form">
+        {this.state.submitted ? (
+          <div>
+            <h4>You submitted successfully!</h4>
+            <button className="btn btn-success" onClick={this.newSong}>
+              Add
             </button>
           </div>
-          <div className="text-center mt-4 text-gray-500">
-            <Link to="/">Cancel</Link>
+        ) : (
+          <div>
+            <div className="form-group">
+              <label htmlFor="title">Title</label>
+              <input
+                type="text"
+                className="form-control"
+                id="title"
+                required
+                value={this.state.title}
+                onChange={this.onChangeTitle}
+                name="title"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="artist">Artist</label>
+              <input
+                type="text"
+                className="form-control"
+                id="artist"
+                required
+                value={this.state.artist}
+                onChange={this.onChangeArtist}
+                name="artist"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="album">Album</label>
+              <input
+                type="text"
+                className="form-control"
+                id="album"
+                required
+                value={this.state.album}
+                onChange={this.onChangeAlbum}
+                name="album"
+              />
+            </div>
+
+            <button onClick={this.saveSong} className="btn btn-success">
+              Submit
+            </button>
           </div>
-        </form>
+        )}
       </div>
-    </React.Fragment>
-  );
-};
+    );
+  }
+}

@@ -1,52 +1,178 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { GlobalContext } from '../context/globalState';
+import React, { Component } from "react";
+import SongDataService from "../SongCRUD/song.service";
+import { Link } from "react-router-dom";
 
-export const SongList = () => {
-  const { songs, removeSong, editSong } = useContext(GlobalContext);
-  return (
-    <React.Fragment>
-      {songs.length > 0 ? (
-        <React.Fragment>
-          {songs.map((song) => (
-            <div
-              className="flex items-center bg-gray-100 mb-10 shadow"
-              key={song.id}
-            >
-              <div className="flex-auto text-left px-4 py-2 m-2">
-                <p className="text-gray-900 leading-none">
-                  {song.name}
-                </p>
-                <p className="text-gray-600">
-                  {song.album}
-                </p>
-                <span className="inline-block text-sm font-semibold mt-1">
-                  {song.artist}
-                </span>
-              </div>
-              <div className="flex-auto text-right px-4 py-2 m-2">
-                <Link
-                  to={`/edit/${song.id}`}
-                  title="Edit Song"
-                >
-                  <div className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold mr-3 py-2 px-4 rounded-full inline-flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                  </div>
-                </Link>
-                <button
-                  onClick={() => removeSong(song.id)}
-                  className="block bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full inline-flex items-center"
-                  title="Remove Song"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                </button>
-              </div>
+export default class SongsList extends Component {
+  constructor(props) {
+    super(props);
+    this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
+    this.retrieveSongs = this.retrieveSongs.bind(this);
+    this.refreshList = this.refreshList.bind(this);
+    this.setActiveSong = this.setActiveSong.bind(this);
+    this.removeAllSongs = this.removeAllSongs.bind(this);
+    this.searchTitle = this.searchTitle.bind(this);
+
+    this.state = {
+      songs: [],
+      currentSong: null,
+      currentIndex: -1,
+      searchTitle: ""
+    };
+  }
+
+  componentDidMount() {
+    this.retrieveSongs();
+  }
+
+  onChangeSearchTitle(e) {
+    const searchTitle = e.target.value;
+
+    this.setState({
+      searchTitle: searchTitle
+    });
+  }
+
+  retrieveSongs() {
+    SongDataService.getAll()
+      .then(response => {
+        this.setState({
+          songs: response.data
+        });
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+
+  refreshList() {
+    this.retrieveSongs();
+    this.setState({
+      currentSong: null,
+      currentIndex: -1
+    });
+  }
+
+  setActiveSong(song, index) {
+    this.setState({
+      currentSong: song,
+      currentIndex: index
+    });
+  }
+
+  removeAllSongs() {
+    SongDataService.deleteAll()
+      .then(response => {
+        console.log(response.data);
+        this.refreshList();
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+
+  searchTitle() {
+    SongDataService.findByTitle(this.state.searchTitle)
+      .then(response => {
+        this.setState({
+          songs: response.data
+        });
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+
+  render() {
+    const { searchTitle, songs, currentSong, currentIndex } = this.state;
+
+    return (
+      <div className="list row">
+        <div className="col-md-8">
+          <div className="input-group mb-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search by title"
+              value={searchTitle}
+              onChange={this.onChangeSearchTitle}
+            />
+            <div className="input-group-append">
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={this.searchTitle}
+              >
+                Search
+              </button>
             </div>
-          ))}
-        </React.Fragment>
-      ) : (
-        <p className="text-center bg-gray-100 text-gray-500 py-5">No data.</p>
-      )}
-    </React.Fragment>
-  );
-};
+          </div>
+        </div>
+        <div className="col-md-6">
+          <h4>Songs List</h4>
+
+          <ul className="list-group">
+            {songs &&
+              songs.map((song, index) => (
+                <li
+                  className={
+                    "list-group-item " +
+                    (index === currentIndex ? "active" : "")
+                  }
+                  onClick={() => this.setActiveSong(song, index)}
+                  key={index}
+                >
+                  {song.title}
+                </li>
+              ))}
+          </ul>
+
+          <button
+            className="m-3 btn btn-sm btn-danger"
+            onClick={this.removeAllSongs}
+          >
+            Remove All
+          </button>
+        </div>
+        <div className="col-md-6">
+          {currentSong ? (
+            <div>
+              <h4>Song</h4>
+              <div>
+                <label>
+                  <strong>Title:</strong>
+                </label>{" "}
+                {currentSong.title}
+              </div>
+              <div>
+                <label>
+                  <strong>Album:</strong>
+                </label>{" "}
+                {currentSong.album}
+              </div>
+              <div>
+                <label>
+                  <strong>Artist:</strong>
+                </label>{" "}
+                {currentSong.artist}
+              </div>
+
+              <Link
+                to={"/songs/" + currentSong.id}
+                className="badge badge-warning"
+              >
+                Edit
+              </Link>
+            </div>
+          ) : (
+            <div>
+              <br />
+              <p>Please click on a song</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+}
