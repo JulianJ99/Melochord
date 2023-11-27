@@ -11,7 +11,7 @@ export const EditSong = (route) => {
 
   const [selectedSong, setSelectedSong] = useState({
     id: null,
-    name: "",
+    title: "",
     album: "",
     artist: "",
   });
@@ -52,8 +52,8 @@ export const EditSong = (route) => {
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:text-gray-600 focus:shadow-outline"
-              value={selectedSong.name}
-              onChange={(e) => handleOnChange("name", e.target.value)}
+              value={selectedSong.title}
+              onChange={(e) => handleOnChange("title", e.target.value)}
               type="text"
               placeholder="Enter name"
             />

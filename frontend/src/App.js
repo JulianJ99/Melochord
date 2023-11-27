@@ -87,7 +87,7 @@ function App() {
                  setUsernameReg(e.target.value);
               }}
            /><br/>
-           <label>password</label>
+           <label>Password</label>
            <input 
              type="text"
              onChange={(e) =>{
