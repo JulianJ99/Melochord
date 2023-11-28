@@ -1,6 +1,6 @@
-const db = require("../../models/songs.model");
+const db = require("../models/songs.model");
 const Song = db.songs;
-const Op = db.Sequelize.Op;
+
 
 // Create and Save a new song
 exports.create = (req, res) => {
