@@ -2,17 +2,16 @@
 import './App.css';
 import React, { useEffect, useState } from "react";
 import Axios from 'axios';
-import { Link, Route, Routes } from 'react-router-dom';
+import {Route, Routes, Link } from 'react-router-dom';
 import Dashboard from '../src/components/Dashboard/Dashboard';
 //import Login from '../src/components/Login/Login';
 import Preferences from '../src/components/Preferences/Preferences';
 //import useToken from '../src/components/App/useToken';
 import { Home } from '../src/components/Home';
-import { AddSong } from '../src/components/SongCRUD/AddSong';
+import AddSong from '../src/components/SongCRUD/AddSong';
+import SongsList from '../src/components/SongCRUD/SongList';
 import { EditSong } from '../src/components/SongCRUD/EditSong';
 import { GlobalProvider } from '../src/components/context/globalState';
-import { SongList } from './components/SongCRUD/SongList';
-import { Song } from './models/songs.model'
 
 
 function App() {
@@ -67,15 +66,20 @@ function App() {
   return (
     
     <GlobalProvider>
-      <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <a href="/songs" className="navbar-brand">
-            Songs
-          </a>
-  
+          <div className="navbar-nav mr-auto">
+            <li className="nav-item">
+              <Link to={"/SongsList"} className="nav-link">
+                Songs
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to={"/add"} className="nav-link">
+                Add song
+              </Link>
+            </li>
+          </div>
         </nav>
-
-      </div>
 
      <div className="App">
         <div className="registration">
@@ -124,6 +128,7 @@ function App() {
       <h1>Melochord</h1>
         <Routes>
           <Route path="/" element={<Home /> } />
+          <Route path="/SongsList" element={<SongsList />} />
           <Route path="/add" element={<AddSong />} exact />
           <Route path="/edit/:id" element={<EditSong />} exact />
           <Route path="/dashboard" element={<Dashboard />}/>

@@ -1,11 +1,12 @@
 const express = require("express");
 const cors = require("cors");
-
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: ["http://localhost:8080", "http://localhost:3000"],
+  optionsSuccessStatus: 200
 };
+
 
 app.use('/login', (req, res) => {
   res.send({

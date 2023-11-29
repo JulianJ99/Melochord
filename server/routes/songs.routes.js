@@ -1,28 +1,28 @@
 module.exports = app => {
-    const tutorials = require("../controllers/song.controller");
+    const songs = require("../controllers/song.controller");
   
     var router = require("express").Router();
   
-    // Create a new Tutorial
-    router.post("/", tutorials.create);
+    // Create a new Song
+    router.post("/", songs.create);
   
-    // Retrieve all Tutorials
-    router.get("/", tutorials.findAll);
+    // Retrieve all Songs
+    router.get("/", songs.findAll);
   
-    // Retrieve all published Tutorials
-    router.get("/published", tutorials.findAllPublished);
+    // Retrieve all published Songs
+    router.get("/published", songs.findAllPublished);
   
-    // Retrieve a single Tutorial with id
-    router.get("/:id", tutorials.findOne);
+    // Retrieve a single Song with id
+    router.get("/:id", songs.findOne);
   
-    // Update a Tutorial with id
-    router.put("/:id", tutorials.update);
+    // Update a Song with id
+    router.put("/:id", songs.update);
   
-    // Delete a Tutorial with id
-    router.delete("/:id", tutorials.delete);
+    // Delete a Song with id
+    router.delete("/:id", songs.delete);
   
-    // Delete all Tutorials
-    router.delete("/", tutorials.deleteAll);
+    // Delete all Songs
+    router.delete("/", songs.deleteAll);
   
-    app.use("/api/tutorials", router);
+    app.use("/api/songs", router);
   };
