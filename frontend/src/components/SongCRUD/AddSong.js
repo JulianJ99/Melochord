@@ -5,16 +5,16 @@ export default class AddSong extends Component {
   constructor(props) {
     super(props);
     this.onChangeTitle = this.onChangeTitle.bind(this);
-    this.onChangeDescription = this.onChangeDescription.bind(this);
+    this.onChangeAlbum = this.onChangeAlbum.bind(this);
+    this.onChangeArtist = this.onChangeArtist.bind(this);
     this.saveSong = this.saveSong.bind(this);
     this.newSong = this.newSong.bind(this);
 
     this.state = {
       id: null,
       title: "",
-      description: "", 
-      published: false,
-
+      album: "", 
+      artist: "",
       submitted: false
     };
   }
@@ -23,28 +23,38 @@ export default class AddSong extends Component {
     this.setState({
       title: e.target.value
     });
+    
   }
 
-  onChangeDescription(e) {
+  onChangeAlbum(e) {
     this.setState({
-      description: e.target.value
+      album: e.target.value
     });
+    
+  }
+
+  onChangeArtist(e) {
+    this.setState({
+      artist: e.target.value
+    });
+    
   }
 
   saveSong() {
     var data = {
       title: this.state.title,
-      description: this.state.description
+      album: this.state.album,
+      artist: this.state.artist
     };
+    console.log(this.state.title, this.state.album, this.state.artist)
 
     SongDataService.create(data)
       .then(response => {
         this.setState({
           id: response.data.id,
           title: response.data.title,
-          description: response.data.description,
-          published: response.data.published,
-
+          album: response.data.album,
+          artist: response.data.artist,
           submitted: true
         });
         console.log(response.data);
@@ -52,15 +62,15 @@ export default class AddSong extends Component {
       .catch(e => {
         console.log(e);
       });
+    console.log("Done");
   }
 
   newSong() {
     this.setState({
       id: null,
       title: "",
-      description: "",
-      published: false,
-
+      album: "",
+      artist: "",
       submitted: false
     });
   }
@@ -91,20 +101,33 @@ export default class AddSong extends Component {
             </div>
 
             <div className="form-group">
-              <label htmlFor="description">Description</label>
+              <label htmlFor="album">Album</label>
               <input
                 type="text"
                 className="form-control"
-                id="description"
+                id="album"
                 required
-                value={this.state.description}
-                onChange={this.onChangeDescription}
-                name="description"
+                value={this.state.album}
+                onChange={this.onChangeAlbum}
+                name="album"
               />
             </div>
 
-            <button onClick={this.saveSong} className="btn btn-success">
-              Submit
+            <div className="form-group">
+              <label htmlFor="artist">Artist</label>
+              <input
+                type="text"
+                className="form-control"
+                id="artist"
+                required
+                value={this.state.artist}
+                onChange={this.onChangeArtist}
+                name="artist"
+              />
+            </div>
+
+            <button className="btn btn-success" onClick={this.saveSong} >
+              Submit 
             </button>
           </div>
         )}

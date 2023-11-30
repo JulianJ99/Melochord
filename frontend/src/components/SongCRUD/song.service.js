@@ -1,4 +1,4 @@
-import http from "../http-common";
+import http from "../http-common"
 
 class SongDataService {
   getAll() {
@@ -10,6 +10,7 @@ class SongDataService {
   }
 
   create(data) {
+    console.log("created");
     return http.post("/songs", data);
   }
 

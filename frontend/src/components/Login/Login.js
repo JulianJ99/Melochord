@@ -1,52 +1,98 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
+import Axios from 'axios';
 import './Login.css';
 
+ 
 
-async function loginUser(credentials) {
-    return fetch('http://localhost:8080/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(credentials)
-    })
-      .then(data => data.json())
-   }
+export const Login = () => {
 
-export default function Login({ setToken }) {
-  const [username, setUserName] = useState();
-  const [password, setPassword] = useState();
+const [usernameReg, setUsernameReg] = useState("");
+const [passwordReg, setPasswordReg] = useState ("");
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-    const token = await loginUser({
-      username,
-      password
-    });
-    setToken(token);
-  }
+const [username, setUsername] = useState("");
+const [password, setPassword] = useState ("");
 
-  return(
-    <div className="login-wrapper">
-      <h1>Please Log In</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          <p>Username</p>
-          <input type="text" onChange={e => setUserName(e.target.value)}/>
-        </label>
-        <label>
-          <p>Password</p>
-          <input type="password" onChange={e => setPassword(e.target.value)}/>
-        </label>
-        <div>
-          <button type="submit">Submit</button>
-        </div>
-      </form>
-    </div>
-  )
+const [loginStatus, setLoginStatus] = useState("");
+
+Axios.defaults.withCredentials = true;
+
+
+const register = () => {
+   Axios.post("http://localhost:3001/register", {
+     username: usernameReg,
+     password: passwordReg,
+    }).then((response) => {
+     console.log(response);
+   });
+};
+
+const login = () => {
+   Axios.post("http://localhost:3001/login", {
+     username: username,
+     password: password,
+   }).then((response) => {
+     if (response.data.message) {
+        setLoginStatus( response.data.message);
+     } else {
+        setLoginStatus (response.data[0].username);
+     }
+     console.log(response.data);
+  });
+};
+  
+useEffect(() => {
+  Axios.get("http://localhost:3001/login").then((response) => {
+    if (response.data.loggedIn === true) {
+      setLoginStatus(response.data.user[0].username);
+    }
+  });
+ }, []);
+
+   return(
+ 
+    
+
+     <div className="App">
+     <div className="registration">
+        <h1>Registration</h1>
+        <label>Username</label>
+        <input
+           type="text"
+           onChange={(e) => {
+              setUsernameReg(e.target.value);
+           }}
+        /><br/>
+        <label>Password</label>
+        <input 
+          type="text"
+          onChange={(e) =>{
+             setPasswordReg(e.target.value);
+          }}
+        /> <br />
+        <button onClick={register} > Register</button>
+        
+     </div>
+ 
+     <div className="login">
+         <h1>Login</h1>
+         <input
+            type="text"
+            placeholder="Username…"
+            onChange = {(e) => {
+               setUsername(e.target.value);
+            }}
+            /> <br/>
+         <input
+            type="password"
+            placeholder="Password…"
+            onChange = {(e) => {
+               setPassword(e.target.value);
+            }}
+         />
+         <button onClick={login}>Login</button>
+     </div>
+     <h1> {loginStatus}</h1>
+  </div>
+ )
 }
 
-Login.propTypes = {
-  setToken: PropTypes.func.isRequired
-};

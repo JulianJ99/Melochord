@@ -6,7 +6,8 @@ class Song extends Component {
   constructor(props) {
     super(props);
     this.onChangeTitle = this.onChangeTitle.bind(this);
-    this.onChangeDescription = this.onChangeDescription.bind(this);
+    this.onChangeAlbum = this.onChangeAlbum.bind(this);
+    this.onChangeArtist = this.onChangeArtist.bind(this);
     this.getSong = this.getSong.bind(this);
     this.updatePublished = this.updatePublished.bind(this);
     this.updateSong = this.updateSong.bind(this);
@@ -16,7 +17,8 @@ class Song extends Component {
       currentSong: {
         id: null,
         title: "",
-        description: "",
+        album: "",
+        artist: "",
         published: false
       },
       message: ""
@@ -40,13 +42,24 @@ class Song extends Component {
     });
   }
 
-  onChangeDescription(e) {
-    const description = e.target.value;
+  onChangeAlbum(e) {
+    const album = e.target.value;
     
     this.setState(prevState => ({
       currentSong: {
         ...prevState.currentSong,
-        description: description
+        album: album
+      }
+    }));
+  }
+
+  onChangeArtist(e) {
+    const artist = e.target.value;
+    
+    this.setState(prevState => ({
+      currentSong: {
+        ...prevState.currentSong,
+        artist: artist
       }
     }));
   }
@@ -71,7 +84,6 @@ class Song extends Component {
       description: this.state.currentSong.description,
       published: status
     };
-
     SongDataService.update(this.state.currentSong.id, data)
       .then(response => {
         this.setState(prevState => ({
@@ -134,7 +146,18 @@ class Song extends Component {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="description">Description</label>
+                <label htmlFor="album">Album</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="album"
+                  value={currentSong.album}
+                  onChange={this.onChangeAlbum}
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="artist">Artist</label>
                 <input
                   type="text"
                   className="form-control"
