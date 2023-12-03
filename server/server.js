@@ -1,53 +1,59 @@
-const express = require("express");
-const cors = require("cors");
-const app = express();
+const express = require('express')
+const app = express()
+const port = 3002
 
-var corsOptions = {
-  origin: ["http://localhost:8080", "http://localhost:3000"],
-  optionsSuccessStatus: 200
-};
+const song_model = require('./models/songs.model')
 
-
-app.use('/login', (req, res) => {
-  res.send({
-    token: 'test123'
-  });
+app.use(express.json())
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers');
+  next();
 });
 
-app.use(cors(corsOptions));
+app.get('/', (req, res) => {
+  song_model.getSongs()
+  .then(response => {
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    res.status(500).send(error);
+  })
+})
 
-// parse requests of content-type - application/json
-app.use(express.json());
+app.post('/songs', (req, res) => {
+  song_model.createSong(req.body)
+  .then(response => {
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    res.status(500).send(error);
+  })
+})
 
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
-
-'use strict'
-
-var db = {}
-var fs = require('fs')
-var path = require('path')
-var Sequelize = require('sequelize')
-var basename = path.basename(__filename)
-var env = process.env.NODE_ENV || 'development'
-var config = require('./config/db.config')[env]
-
-var sequelize
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config)
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config)
-}
-
-// simple route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to the main page." });
+app.delete('/songs/:id', (req, res) => {
+  song_model.deleteSong(req.params.id)
+  .then(response => {
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    res.status(500).send(error);
+  })
+})
+app.put("/songs/:id", (req, res) => {
+  const id = req.params.id;
+  const body = req.body;
+  song_model
+    .updateSong(id, body)
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
 });
 
-require("./routes/songs.routes")(app);
-
-// set port, listen for requests
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+app.listen(port, () => {
+  console.log(`App running on port ${port}.`)
+})

@@ -1,178 +1,91 @@
-import React, { Component } from "react";
-import SongDataService from "../SongCRUD/song.service";
-import { Link } from "react-router-dom";
+import {useState, useEffect} from 'react';
 
-export default class SongsList extends Component {
-  constructor(props) {
-    super(props);
-    this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
-    this.retrieveSongs = this.retrieveSongs.bind(this);
-    this.refreshList = this.refreshList.bind(this);
-    this.setActiveSong = this.setActiveSong.bind(this);
-    this.removeAllSongs = this.removeAllSongs.bind(this);
-    this.searchTitle = this.searchTitle.bind(this);
+function App(){
+  const [songs, setSongs] = useState(false);
 
-    this.state = {
-      songs: [],
-      currentSong: null,
-      currentIndex: -1,
-      searchTitle: ""
-    };
-  }
-
-  componentDidMount() {
-    this.retrieveSongs();
-  }
-
-  onChangeSearchTitle(e) {
-    const searchTitle = e.target.value;
-
-    this.setState({
-      searchTitle: searchTitle
+function getSong() {
+  fetch('http://localhost:3002')
+    .then(response => {
+      return response.text();
+    })
+    .then(data => {
+      setSongs(data);
     });
-  }
-
-  retrieveSongs() {
-    SongDataService.getAll()
-      .then(response => {
-        this.setState({
-          songs: response.data
-        });
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  }
-
-  refreshList() {
-    this.retrieveSongs();
-    this.setState({
-      currentSong: null,
-      currentIndex: -1
-    });
-  }
-
-  setActiveSong(song, index) {
-    this.setState({
-      currentSong: song,
-      currentIndex: index
-    });
-  }
-
-  removeAllSongs() {
-    SongDataService.deleteAll()
-      .then(response => {
-        console.log(response.data);
-        this.refreshList();
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  }
-
-  searchTitle() {
-    SongDataService.findByTitle(this.state.searchTitle)
-      .then(response => {
-        this.setState({
-          songs: response.data
-        });
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  }
-
-  render() {
-    const { searchTitle, songs, currentSong, currentIndex } = this.state;
-
-    return (
-      <div className="list row">
-        <div className="col-md-8">
-          <div className="input-group mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by title"
-              value={searchTitle}
-              onChange={this.onChangeSearchTitle}
-            />
-            <div className="input-group-append">
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
-                onClick={this.searchTitle}
-              >
-                Search
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-6">
-          <h4>Songs List</h4>
-
-          <ul className="list-group">
-            {songs &&
-              songs.map((song, index) => (
-                <li
-                  className={
-                    "list-group-item " +
-                    (index === currentIndex ? "active" : "")
-                  }
-                  onClick={() => this.setActiveSong(song, index)}
-                  key={index}
-                >
-                  {song.title}
-                </li>
-              ))}
-          </ul>
-
-          <button
-            className="m-3 btn btn-sm btn-danger"
-            onClick={this.removeAllSongs}
-          >
-            Remove All
-          </button>
-        </div>
-        <div className="col-md-6">
-          {currentSong ? (
-            <div>
-              <h4>Song</h4>
-              <div>
-                <label>
-                  <strong>Title:</strong>
-                </label>{" "}
-                {currentSong.title}
-              </div>
-              <div>
-                <label>
-                  <strong>Album:</strong>
-                </label>{" "}
-                {currentSong.album}
-              </div>
-              <div>
-                <label>
-                  <strong>Artist:</strong>
-                </label>{" "}
-                {currentSong.artist}
-              </div>
-
-              <Link
-                to={"/songs/" + currentSong.id}
-                className="badge badge-warning"
-              >
-                Edit
-              </Link>
-            </div>
-          ) : (
-            <div>
-              <br />
-              <p>Please click on a song</p>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
 }
+
+function createSong() {
+  let title = prompt('Enter the song name');
+  let album = prompt('Enter the name of the album that features the song');
+  let artist = prompt('Enter the name of the artist who made the song');
+  const currentDate = new Date().toLocaleString() + ""
+  const createdAt = currentDate;
+  const updatedAt = currentDate;
+  console.log(title, album, artist, createdAt, updatedAt);
+  fetch('http://localhost:3002/songs', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({title, album, artist, createdAt, updatedAt}),
+  })
+    .then(response => {
+      return response.text();
+    })
+    .then(data => {
+      alert(data);
+      getSong();
+    });
+}
+
+function deleteSong() {
+  let id = prompt('Enter song id');
+  fetch(`http://localhost:3002/songs/${id}`, {
+    method: 'DELETE',
+  })
+    .then(response => {
+      return response.text();
+    })
+    .then(data => {
+      alert(data);
+      getSong();
+    });
+}
+
+function updateSong() {
+  let id = prompt('Enter song id');
+  let title = prompt('Enter new song name');
+  let album = prompt('Enter the name of the album that features the song');
+  let artist = prompt('Enter the name of the artist who made the song');
+  fetch(`http://localhost:3002/songs/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({title, album, artist}),
+  })
+    .then(response => {
+      return response.text();
+    })
+    .then(data => {
+      alert(data);
+      getSong();
+    });
+}
+
+
+useEffect(() => {
+getSong();
+}, []);
+return (
+<div>
+  {songs ? songs : 'There is no song data available'}
+  <br />
+  <button onClick={createSong}>Add song</button>
+  <br />
+  <button onClick={deleteSong}>Delete song</button>
+  <br />
+  <button onClick={updateSong}>Update song</button>
+</div>
+);
+}
+export default App;

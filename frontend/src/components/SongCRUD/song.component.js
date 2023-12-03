@@ -161,9 +161,9 @@ class Song extends Component {
                 <input
                   type="text"
                   className="form-control"
-                  id="description"
-                  value={currentSong.description}
-                  onChange={this.onChangeDescription}
+                  id="artist"
+                  value={currentSong.artist}
+                  onChange={this.onChangeArtist}
                 />
               </div>
 
