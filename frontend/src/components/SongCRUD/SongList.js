@@ -1,15 +1,22 @@
 import {useState, useEffect} from 'react';
 
 function App(){
-  const [songs, setSongs] = useState(false);
+  const [songs, setSongs] = useState([]);
 
 function getSong() {
-  fetch('http://localhost:3002')
+  fetch('http://localhost:3002', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    
+  })
     .then(response => {
-      return response.text();
+      return response.json();
     })
     .then(data => {
       setSongs(data);
+      console.log(data);
     });
 }
 
@@ -73,12 +80,46 @@ function updateSong() {
 }
 
 
-useEffect(() => {
-getSong();
-}, []);
+  useEffect(() => {
+    getSong();
+  }, []);
+
+  let renderedSongs = songs.map((song, i) => {
+    return (
+      <tr key={i}>
+        <td>{song.id}</td>
+        <td>{song.title}</td>
+        <td>{song.artist}</td>
+        <td>{song.album}</td>
+        <td>{song.createdat}</td>
+        <td>{song.updatedat}</td>
+      </tr>
+    );
+  });
+
+
 return (
 <div>
-  {songs ? songs : 'There is no song data available'}
+  
+
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Songs</th>
+        <th>Artist</th>
+        <th>Album</th>
+        <th>Created at</th>
+        <th>Updated at</th>
+      </tr>
+      </thead>
+    <tbody>
+      {renderedSongs}
+    </tbody>
+
+    
+  </table>
   <br />
   <button onClick={createSong}>Add song</button>
   <br />

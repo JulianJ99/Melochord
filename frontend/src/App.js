@@ -1,7 +1,7 @@
 
 import './App.css';
 import React, { Component } from "react";
-import {Route, Routes, Link } from 'react-router-dom';
+import {Route, Routes } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 //import useToken from '../src/components/App/useToken';
@@ -21,21 +21,6 @@ class App extends Component {
 render(){
   return (
       <React.Fragment>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <div className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <Link to={"/songs"} className="nav-link">
-                Songs
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to={"/add"} className="nav-link">
-                Add song
-              </Link>
-            </li>
-          </div>
-        </nav>
-
 
     <div className="wrapper">
 
