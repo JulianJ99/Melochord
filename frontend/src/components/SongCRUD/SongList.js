@@ -16,7 +16,7 @@ function getSong() {
     })
     .then(data => {
       setSongs(data);
-      console.log(data);
+      
     });
 }
 
@@ -27,7 +27,7 @@ function createSong() {
   const currentDate = new Date().toLocaleString() + ""
   const createdAt = currentDate;
   const updatedAt = currentDate;
-  console.log(title, album, artist, createdAt, updatedAt);
+  
   fetch('http://localhost:3002/songs', {
     method: 'POST',
     headers: {
@@ -100,9 +100,6 @@ function updateSong() {
 
 return (
 <div>
-  
-
-
   <table>
     <thead>
       <tr>
@@ -118,7 +115,6 @@ return (
       {renderedSongs}
     </tbody>
 
-    
   </table>
   <br />
   <button onClick={createSong}>Add song</button>
