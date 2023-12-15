@@ -31,6 +31,7 @@ const login = () => {
      username: username,
      password: password,
    }).then((response) => {
+      console.log(response.data);
      if (response.data.message) {
         setLoginStatus( response.data.message);
      } else {
