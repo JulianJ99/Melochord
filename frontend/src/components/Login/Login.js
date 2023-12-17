@@ -16,9 +16,16 @@ const [loginStatus, setLoginStatus] = useState("");
 
 Axios.defaults.withCredentials = true;
 
+Axios.create({
+   baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000',
+   headers: {
+     "Content-type": "application/json"
+   }
+ });
+
 
 const register = () => {
-   Axios.post("http://localhost:3001/register", {
+   Axios.post("http://host.docker.internal:3001/register", {
      username: usernameReg,
      password: passwordReg,
     }).then((response) => {
@@ -27,7 +34,7 @@ const register = () => {
 };
 
 const login = () => {
-   Axios.post("http://localhost:3001/login", {
+   Axios.post("http://host.docker.internal:3001/login", {
      username: username,
      password: password,
    }).then((response) => {
@@ -42,7 +49,7 @@ const login = () => {
 };
   
 useEffect(() => {
-  Axios.get("http://localhost:3001/login").then((response) => {
+  Axios.get("http://host.docker.internal:3001/login").then((response) => {
     if (response.data.loggedIn === true) {
       setLoginStatus(response.data.user[0].username);
     }
@@ -55,6 +62,7 @@ useEffect(() => {
 
      <div className="App">
      <div className="registration">
+     <h1>Test om te zien of code uberhaupt update</h1>
         <h1>Registration</h1>
         <label>Username</label>
         <input
