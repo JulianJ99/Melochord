@@ -14,7 +14,7 @@ const [password, setPassword] = useState ("");
 
 const [loginStatus, setLoginStatus] = useState("");
 
-Axios.defaults.withCredentials = true;
+
 
 Axios.create({
    baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000',
@@ -62,7 +62,6 @@ useEffect(() => {
 
      <div className="App">
      <div className="registration">
-     <h1>Test om te zien of code uberhaupt update</h1>
         <h1>Registration</h1>
         <label>Username</label>
         <input
