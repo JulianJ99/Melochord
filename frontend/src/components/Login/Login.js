@@ -44,7 +44,7 @@ const login = () => {
      } else {
         setLoginStatus (response.data[0].username);
      }
-     console.log(response.data);
+
   });
 };
   
