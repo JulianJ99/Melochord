@@ -22,3 +22,5 @@ services:
 
 networks:
   frontend:
+    name: frontend
+    external: true
