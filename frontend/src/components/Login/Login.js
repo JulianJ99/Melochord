@@ -14,13 +14,14 @@ const [password, setPassword] = useState ("");
 
 const [loginStatus, setLoginStatus] = useState("");
 
-
+Axios.defaults.withCredentials = true;
 
 Axios.create({
-   baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000',
+   baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001',
    headers: {
      "Content-type": "application/json"
-   }
+   },
+   
  });
 
 
@@ -34,7 +35,7 @@ const register = () => {
 };
 
 const login = () => {
-   Axios.post("http://localhost:3001/login", {
+   Axios.post('http://localhost:3001/login', {
      username: username,
      password: password,
    }).then((response) => {

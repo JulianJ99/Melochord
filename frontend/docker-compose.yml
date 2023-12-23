@@ -2,20 +2,19 @@ version: '3.8'
 
 services:
   frontend:
+    stdin_open: true
     container_name: melochord-frontend
-    env_file: ./.env
     build:
-      args:
-        - REACT_APP_API_BASE_URL=$CLIENT_API_BASE_URL
-    volumes:
-      - '.:/frontend'
-      - '/frontend/node_modules'    
+      context: ./
+      dockerfile: ./Dockerfile        
+    env_file: ./.env         
     ports:
-      - $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
+      - 3000:3000
     environment:
       - CHOKIDAR_USEPOLLING=true
     extra_hosts:
-      - "host.docker.internal:172.17.0.1"  
+      - host.docker.internal:172.17.0.1
+      - localhost:127.0.0.1
     networks:
       - frontend 
       
