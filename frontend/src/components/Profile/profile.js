@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import ProfileDataService from "../services/profile.service";
-import { withRouter } from '../common/with-router';
+import ProfileDataService from "./profile.service";
+import { withRouter } from '../with-router';
+import { Login } from '../Login/Login'
+
 
 class Profile extends Component {
   constructor(props) {
@@ -20,6 +22,14 @@ class Profile extends Component {
       },
       message: ""
     };
+
+    useEffect(() => {
+      Axios.get("http://localhost:3001/login").then((response) => {
+        if (response.data.loggedIn === true) {
+          Login.setLoginStatus(response.data.user[0].id);
+        }
+      });
+     }, []);
   }
 
   componentDidMount() {
@@ -50,9 +60,11 @@ class Profile extends Component {
     }));
   }
 
+  
+
   getProfile(id) {
-    if (response.data.loggedIn === true) {
-        id = response.data.user[0].id;
+    if (loginStatus != null) {
+        id = {loginStatus};
     }
     ProfileDataService.get(id)
       .then(response => {
@@ -179,6 +191,4 @@ class Profile extends Component {
   }
 }
 
-
-
-  export default withRouter(Profile);
+export default withRouter(Profile);
