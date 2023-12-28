@@ -4,8 +4,12 @@ import { withRouter } from '../with-router';
 import { Login } from '../Login/Login'
 
 
+
 class Profile extends Component {
+  static contextType = Login.loginContext;
+  
   constructor(props) {
+    
     super(props);
     this.onChangeTitle = this.onChangeTitle.bind(this);
     this.onChangeDescription = this.onChangeDescription.bind(this);
@@ -15,7 +19,7 @@ class Profile extends Component {
 
     this.state = {
       currentProfile: {
-        id: null,
+        id: "",
         title: "",
         description: "",
         published: false
@@ -23,16 +27,10 @@ class Profile extends Component {
       message: ""
     };
 
-    useEffect(() => {
-      Axios.get("http://localhost:3001/login").then((response) => {
-        if (response.data.loggedIn === true) {
-          Login.setLoginStatus(response.data.user[0].id);
-        }
-      });
-     }, []);
   }
 
   componentDidMount() {
+    console.log(Profile.contextType);
     this.getProfile(this.props.router.params.id);
   }
 
@@ -63,9 +61,6 @@ class Profile extends Component {
   
 
   getProfile(id) {
-    if (loginStatus != null) {
-        id = {loginStatus};
-    }
     ProfileDataService.get(id)
       .then(response => {
         this.setState({

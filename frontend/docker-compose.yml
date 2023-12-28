@@ -17,7 +17,8 @@ services:
       - localhost:127.0.0.1
     networks:
       - frontend 
-      
+    cpu_period: 10000
+    cpu_quota: 2500  
 
 networks:
   frontend:

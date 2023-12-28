@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import Axios from 'axios';
 import './Login.css';
 
@@ -12,7 +12,11 @@ const [passwordReg, setPasswordReg] = useState ("");
 const [username, setUsername] = useState("");
 const [password, setPassword] = useState ("");
 
+
 const [loginStatus, setLoginStatus] = useState("");
+
+const [UserIdFetcher, setUserIdFetcher] = useState("");
+const LoginContext = createContext();
 
 Axios.defaults.withCredentials = true;
 
@@ -38,12 +42,15 @@ const login = () => {
    Axios.post('http://localhost:3001/login', {
      username: username,
      password: password,
+     id: null,
    }).then((response) => {
       console.log(response.data);
      if (response.data.message) {
-        setLoginStatus( response.data.message);
+        setLoginStatus(response.data.message);
      } else {
         setLoginStatus (response.data[0].username);
+        setUserIdFetcher(response.data[0].id);
+        LoginContext = UserIdFetcher;
      }
 
   });
@@ -52,13 +59,19 @@ const login = () => {
 useEffect(() => {
   Axios.get("http://localhost:3001/login").then((response) => {
     if (response.data.loggedIn === true) {
+      console.log(response.data);
       setLoginStatus(response.data.user[0].username);
+      setUserIdFetcher(response.data.user[0].id);
+
     }
   });
  }, []);
 
+ console.log(UserIdFetcher);
+ console.log(loginStatus)
+
    return(
- 
+      
     
 
      <div className="App">
