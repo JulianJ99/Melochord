@@ -6,7 +6,7 @@ import { Login } from '../Login/Login'
 
 
 class Profile extends Component {
-  static contextType = Login.loginContext;
+
   
   constructor(props) {
     
@@ -16,6 +16,9 @@ class Profile extends Component {
     this.getProfile = this.getProfile.bind(this);
     this.updatePublished = this.updatePublished.bind(this);
     this.updateProfile = this.updateProfile.bind(this);
+    const UserIdFetcher = this.props.idHookValue;
+    this.id = UserIdFetcher;
+    console.log(UserIdFetcher);
 
     this.state = {
       currentProfile: {
@@ -29,10 +32,7 @@ class Profile extends Component {
 
   }
 
-  componentDidMount() {
-    console.log(Profile.contextType);
-    this.getProfile(this.props.router.params.id);
-  }
+
 
   onChangeTitle(e) {
     const title = e.target.value;
@@ -61,6 +61,7 @@ class Profile extends Component {
   
 
   getProfile(id) {
+
     ProfileDataService.get(id)
       .then(response => {
         this.setState({

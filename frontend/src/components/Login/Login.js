@@ -1,6 +1,7 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import './Login.css';
+
 
  
 
@@ -16,7 +17,7 @@ const [password, setPassword] = useState ("");
 const [loginStatus, setLoginStatus] = useState("");
 
 const [UserIdFetcher, setUserIdFetcher] = useState("");
-const LoginContext = createContext();
+
 
 Axios.defaults.withCredentials = true;
 
@@ -28,6 +29,15 @@ Axios.create({
    
  });
 
+function withIdHook(Component) {
+   console.log("Saved ID hook!");
+   return function WrappedComponent(props) {
+      const idHookValue = setUserIdFetcher();
+      
+      return <Component {...props} idHookValue={idHookValue}/>;
+      
+   }
+}
 
 const register = () => {
    Axios.post("http://localhost:3001/register", {
@@ -50,7 +60,7 @@ const login = () => {
      } else {
         setLoginStatus (response.data[0].username);
         setUserIdFetcher(response.data[0].id);
-        LoginContext = UserIdFetcher;
+        
      }
 
   });
@@ -72,30 +82,28 @@ useEffect(() => {
 
    return(
       
-    
+   <div className="App">
+   <div className="registration">
+      <h1>Registration</h1>
+      <label>Username</label>
+      <input
+         type="text"
+         onChange={(e) => {
+            setUsernameReg(e.target.value);
+         }}
+      /><br/>
+      <label>Password</label>
+      <input 
+         type="text"
+         onChange={(e) =>{
+            setPasswordReg(e.target.value);
+         }}
+      /> <br />
+      <button onClick={register} > Register</button>
+      
+   </div>
 
-     <div className="App">
-     <div className="registration">
-        <h1>Registration</h1>
-        <label>Username</label>
-        <input
-           type="text"
-           onChange={(e) => {
-              setUsernameReg(e.target.value);
-           }}
-        /><br/>
-        <label>Password</label>
-        <input 
-          type="text"
-          onChange={(e) =>{
-             setPasswordReg(e.target.value);
-          }}
-        /> <br />
-        <button onClick={register} > Register</button>
-        
-     </div>
- 
-     <div className="login">
+   <div className="login">
          <h1>Login</h1>
          <input
             type="text"
@@ -112,9 +120,12 @@ useEffect(() => {
             }}
          />
          <button onClick={login}>Login</button>
-     </div>
-     <h1> {loginStatus}</h1>
-  </div>
- )
+      </div>
+      <h1> {loginStatus}</h1>
+      {withIdHook()}
+   </div>
+   )
+   
+
 }
 
