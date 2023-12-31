@@ -3,6 +3,7 @@ import Axios from 'axios';
 import './Login.css';
 
 
+
  
 
 export const Login = () => {
@@ -29,15 +30,6 @@ Axios.create({
    
  });
 
-function withIdHook(Component) {
-   console.log("Saved ID hook!");
-   return function WrappedComponent(props) {
-      const idHookValue = setUserIdFetcher();
-      
-      return <Component {...props} idHookValue={idHookValue}/>;
-      
-   }
-}
 
 const register = () => {
    Axios.post("http://localhost:3001/register", {
@@ -66,22 +58,23 @@ const login = () => {
   });
 };
   
+
+
 useEffect(() => {
   Axios.get("http://localhost:3001/login").then((response) => {
     if (response.data.loggedIn === true) {
       console.log(response.data);
       setLoginStatus(response.data.user[0].username);
       setUserIdFetcher(response.data.user[0].id);
-
+      
     }
   });
  }, []);
 
- console.log(UserIdFetcher);
- console.log(loginStatus)
+
 
    return(
-      
+
    <div className="App">
    <div className="registration">
       <h1>Registration</h1>
@@ -91,7 +84,7 @@ useEffect(() => {
          onChange={(e) => {
             setUsernameReg(e.target.value);
          }}
-      /><br/>
+      /> <br/>
       <label>Password</label>
       <input 
          type="text"
@@ -122,10 +115,10 @@ useEffect(() => {
          <button onClick={login}>Login</button>
       </div>
       <h1> {loginStatus}</h1>
-      {withIdHook()}
+      {UserIdFetcher}
    </div>
    )
    
-
+   
 }
 

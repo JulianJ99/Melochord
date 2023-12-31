@@ -9,7 +9,7 @@ import { Login } from '../src/components/Login/Login';
 import { Home } from '../src/components/Home';
 import AddSong from '../src/components/SongCRUD/AddSong';
 import SongsList from '../src/components/SongCRUD/SongList';
-import Profile from '../src/components/Profile/profile';
+import ProfilePage from '../src/components/Profile/ProfilePage';
 
 
 class App extends Component {
@@ -31,7 +31,7 @@ render(){
           <Route path="/songs" element={<SongsList />} />
           <Route path="/add" element={<AddSong />} exact />
           <Route path="/login" element={<Login />}/>
-          <Route path="/profile" element={<Profile />}/>
+          <Route path="/profile" element={<ProfilePage />}/>
         </Routes>
     </div>
     </React.Fragment>
