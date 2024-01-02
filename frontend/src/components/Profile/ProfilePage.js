@@ -7,7 +7,7 @@ function App(){
   const [UserIdFetcher, setUserIdFetcher] = useState("");
 
 function getProfile() {
-  fetch('http://localhost:27017/melochord', {
+  fetch('http://localhost:8081', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ function updateProfile() {
   let profileid = UserIdFetcher;
   let username = prompt('Enter new song name');
   let profilepicture = prompt('Enter the name of the album that features the song');
-  fetch(`http://localhost:27017/melochord${profileid}`, {
+  fetch(`http://localhost:8081/profiles${profileid}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
