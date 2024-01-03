@@ -54,16 +54,20 @@ function updateProfile() {
     });
   }, []);
 
-  let renderedProfiles = profiles.map((profile, i) => {
-    if(profile.profileid === UserIdFetcher){
+  let renderedProfiles = profiles.map(profile => {
+    if (profile.profileid === UserIdFetcher){
       return (
-      <tr key={i}>
-        <td>{profile.profileid}</td>
-        <td>{profile.username}</td>
-        <td>{profile.profilepicture}</td>
-      </tr>
-    );
-  }});
+        <tr>
+          <td>{profile.profileid}</td>
+          <td>{profile.username}</td>
+          <td>{profile.profilepicture}</td>
+        </tr>
+      )   
+    } 
+    else{
+      return (null);
+    }
+  });
 
 
 return (
