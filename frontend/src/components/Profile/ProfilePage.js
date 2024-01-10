@@ -4,7 +4,7 @@ import Axios from 'axios';
 
 function App(){
   const [profiles, setProfiles] = useState([]);
-  const [UserIdFetcher, setUserIdFetcher] = useState("");
+  const [UserIdFetcher, setUserIdFetcher] = useState([]);
 
 function getProfile() {
   fetch('http://localhost:8081', {
@@ -54,20 +54,16 @@ function updateProfile() {
     });
   }, []);
 
-  let renderedProfiles = profiles.map(profile => {
+  let renderedProfiles = profiles.map((profile, i) => {
     if (profile.profileid === UserIdFetcher){
-      return (
-        <tr>
-          <td>{profile.profileid}</td>
-          <td>{profile.username}</td>
-          <td>{profile.profilepicture}</td>
-        </tr>
-      )   
-    } 
-    else{
-      return (null);
-    }
-  });
+    return (
+          <tr key={i}>
+            <td>{profile.profileid}</td>
+            <td>{profile.username}</td>
+            <td>{profile.profilepicture}</td>
+          </tr>
+      );  
+  }});
 
 
 return (
